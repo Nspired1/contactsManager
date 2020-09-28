@@ -35,6 +35,9 @@ class AddContact extends Component {
       phone: "",
       errors: {},
     });
+
+    //redirect to homepage after entering new contact
+    this.props.history.push("/");
   };
 
   onChange = (e) => this.setState({ [e.target.name]: e.target.value });

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import "../fontawesome";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Consumer } from "../context";

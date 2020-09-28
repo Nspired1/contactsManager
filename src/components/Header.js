@@ -1,5 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import "../fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Header = (props) => {
   //destructuring props object for easier access in h1
@@ -14,9 +17,22 @@ const Header = (props) => {
         <div>
           <ul className="navbar-nav mr-auto">
             <li className="nav-item">
-              <a href="/" className="nav-link">
+              <Link to="/" className="nav-link">
+                <FontAwesomeIcon icon={["fas", "home"]} />
                 Home
-              </a>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/contact/add" className="nav-link">
+                <FontAwesomeIcon icon={["fas", "plus"]} />
+                Add
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/about" className="nav-link">
+                <FontAwesomeIcon icon={["fas", "book"]} />
+                About
+              </Link>
             </li>
           </ul>
         </div>
