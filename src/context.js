@@ -42,6 +42,18 @@ export class Provider extends Component {
         email: "arose@outlook.com",
         phone: "972-555-5555",
       },
+      {
+        id: 4,
+        name: "Keyser Söze",
+        email: "ksoze@yahoo.com",
+        phone: "310-555-5555",
+      },
+      {
+        id: 5,
+        name: "Rolo Tomassi",
+        email: "rtomassi@fastmail.com",
+        phone: "818-555-5555",
+      },
     ],
 
     dispatch: (action) => {
