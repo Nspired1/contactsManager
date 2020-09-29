@@ -16,7 +16,7 @@ class Contacts extends Component {
                 <span className="text-danger">Contacts</span> Manager
               </h1>
               {contacts.map((contact) => (
-                <Contact key={contact.id} contact={contact} />
+                <Contact key={contact._id} contact={contact} />
               ))}
             </div>
           );

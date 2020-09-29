@@ -8,7 +8,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         contacts: state.contacts.filter(
-          (contact) => contact.id !== action.payload
+          (contact) => contact._id !== action.payload
         ),
       };
     case "ADD_CONTACT":
@@ -23,43 +23,21 @@ const reducer = (state, action) => {
 
 export class Provider extends Component {
   state = {
-    contacts: [
-      {
-        id: 1,
-        name: "Jane Doe",
-        email: "janedoe@gmail.com",
-        phone: "415-555-5555",
-      },
-      {
-        id: 2,
-        name: "Genevieve Galard",
-        email: "ggalard@protonmail.com",
-        phone: "510-555-5555",
-      },
-      {
-        id: 3,
-        name: "Ashley Rosenthal",
-        email: "arose@outlook.com",
-        phone: "972-555-5555",
-      },
-      {
-        id: 4,
-        name: "Keyser Söze",
-        email: "ksoze@yahoo.com",
-        phone: "310-555-5555",
-      },
-      {
-        id: 5,
-        name: "Rolo Tomassi",
-        email: "rtomassi@fastmail.com",
-        phone: "818-555-5555",
-      },
-    ],
+    contacts: [],
 
     dispatch: (action) => {
       this.setState((state) => reducer(state, action));
     },
   };
+
+  componentDidMount() {
+    // axios
+    //   .get("/api/contacts")
+    //   .then((res) => this.setState({ contacts: res.data }));
+    fetch("/api/contacts")
+      .then((data) => data.json())
+      .then((contacts) => this.setState({ contacts }));
+  }
 
   render() {
     return (

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-
 import "../fontawesome";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Consumer } from "../context";
 import PropTypes from "prop-types";
+import axios from "axios";
 
 class Contact extends Component {
   state = {
@@ -14,16 +14,18 @@ class Contact extends Component {
     this.setState({ showContactInfo: !this.state.showContactInfo });
   };
 
-  onDeleteClick = (id, dispatch) => {
-    dispatch({
-      type: "DELETE_CONTACT",
-      payload: id,
-    });
+  onDeleteClick = (_id, dispatch) => {
+    axios.delete(`/api/contacts/${_id}`).then((res) =>
+      dispatch({
+        type: "DELETE_CONTACT",
+        payload: _id,
+      })
+    );
   };
 
   render() {
     //destructuring props object to make access to props shorter
-    const { id, name, email, phone } = this.props.contact;
+    const { _id, name, email, phone } = this.props.contact;
     //const { showContactInfo } = this.state;
 
     return (
@@ -42,7 +44,7 @@ class Contact extends Component {
                 <FontAwesomeIcon
                   icon={["fas", "times"]}
                   style={{ cursor: "pointer", float: "right", color: "red" }}
-                  onClick={this.onDeleteClick.bind(this, id, dispatch)}
+                  onClick={this.onDeleteClick.bind(this, _id, dispatch)}
                 />
               </h4>
               {this.state.showContactInfo ? (

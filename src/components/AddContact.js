@@ -1,31 +1,35 @@
 import React, { Component } from "react";
 import { Consumer } from "../context";
 import TextInputGroup from "./TextInputGroup";
-import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 class AddContact extends Component {
   state = {
     name: "",
     email: "",
     phone: "",
-    errors: { name: "" },
+    errors: {},
   };
 
   onSubmit = (dispatch, e) => {
     e.preventDefault();
+    //destructuring properties from state
     const { name, email, phone } = this.state;
+
     //validation for name field, user is forced to enter a name for contact
     if (name === "") {
       this.setState({ errors: { name: "Name is REQUIRED" } });
       return;
     }
     const newContact = {
-      id: uuidv4(),
       name,
       email,
       phone,
     };
-    dispatch({ type: "ADD_CONTACT", payload: newContact });
+
+    axios
+      .post(`/api/contacts`, newContact)
+      .then((res) => dispatch({ type: "ADD_CONTACT", payload: res.data }));
 
     //clears component state to reset form
     //also clears errors object so errors aren't propagated
