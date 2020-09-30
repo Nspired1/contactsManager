@@ -8,7 +8,8 @@ import {
   faSortDown,
   faTimes,
   faBook,
+  faPencilAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
 //add icons to library
-library.add(faPlus, faSortDown, faTimes, faHome, faBook);
+library.add(faPlus, faSortDown, faTimes, faHome, faBook, faPencilAlt);

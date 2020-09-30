@@ -17,7 +17,7 @@ class AddContact extends Component {
     const { name, email, phone } = this.state;
 
     //validation for name field, user is forced to enter a name for contact
-    if (name === "") {
+    if (name.length < 1) {
       this.setState({ errors: { name: "Name is REQUIRED" } });
       return;
     }

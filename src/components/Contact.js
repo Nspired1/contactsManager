@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import "../fontawesome";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Consumer } from "../context";
@@ -46,6 +47,16 @@ class Contact extends Component {
                   style={{ cursor: "pointer", float: "right", color: "red" }}
                   onClick={this.onDeleteClick.bind(this, _id, dispatch)}
                 />
+                <Link to={`contacts/edit/${_id}`}>
+                  <FontAwesomeIcon
+                    icon={["fas", "pencil-alt"]}
+                    style={{
+                      cursor: "pointer",
+                      float: "right",
+                      marginRight: "1rem",
+                    }}
+                  />
+                </Link>
               </h4>
               {this.state.showContactInfo ? (
                 <ul className="list-group">
