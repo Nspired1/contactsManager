@@ -44,7 +44,6 @@ class EditContact extends Component {
       email,
       phone,
     };
-    console.log(updContact);
     this.props.updateContact(updContact);
 
     //clears component state to reset form
