@@ -6,13 +6,14 @@ import Contacts from "./components/Contacts";
 import AddContact from "./components/AddContact";
 import EditContact from "./components/EditContact";
 import NotFound from "./components/pages/NotFound";
-import { Provider } from "./context";
+import { Provider } from "react-redux";
+import store from "./store";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
-    <Provider>
+    <Provider store={store}>
       <Router>
         <div className="App">
           <Header branding="Contact Manager 1.0" />

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Consumer } from "../context";
 import TextInputGroup from "./TextInputGroup";
-import axios from "axios";
+import { connect } from "react-redux";
+import { getContact, updateContact } from "../actions/contactActions";
+import PropTypes from "prop-types";
 
 class EditContact extends Component {
   state = {
@@ -11,39 +12,40 @@ class EditContact extends Component {
     errors: {},
   };
 
-  async componentDidMount() {
-    const { id } = this.props.match.params;
-    const res = await axios.get(`/api/contacts/${id}`);
-    const foundContact = res.data;
-    this.setState({
-      name: foundContact.name,
-      email: foundContact.email,
-      phone: foundContact.phone,
-    });
+  UNSAFE_componentWillReceiveProps(nextProps, nextState) {
+    const { name, email, phone } = nextProps.contact;
+    this.setState({ name, email, phone });
   }
 
-  onSubmit = async (dispatch, e) => {
+  //NOTE: id is used so props.match.params will get id, HOWEVER in the object
+  // it is _id because Mongoose generates unique ID's with an underscore
+  componentDidMount() {
+    const { id } = this.props.match.params;
+    this.props.getContact(id);
+  }
+
+  onSubmit = (e) => {
     e.preventDefault();
     //destructuring properties from state
     const { name, email, phone } = this.state;
 
-    //validation for name field, user must enter a name for contact
+    //validation for name, user must enter a name for contact
     if (name.length < 1) {
       this.setState({ errors: { name: "Name is REQUIRED" } });
       return;
     }
 
-    const updateContact = {
+    const { id } = this.props.match.params;
+
+    //_id is needed to keep unique keys for react to correctly display contacts
+    const updContact = {
+      _id: id,
       name,
       email,
       phone,
     };
-
-    const { id } = this.props.match.params;
-
-    const res = await axios.put(`/api/contacts/${id}`, updateContact);
-
-    dispatch({ type: "UPDATE_CONTACT", payload: res.data });
+    console.log(updContact);
+    this.props.updateContact(updContact);
 
     //clears component state to reset form
     //also clears errors object so errors aren't propagated
@@ -60,62 +62,60 @@ class EditContact extends Component {
 
   onChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
-  //Below shows 2 ways of getting inputs from forms, one uses a functional component <TextInputGroup /> and
-  //the other uses JSX markup class="form-group"
   render() {
-    //destructured errors from State to avoid TypeError since errors doesn't have a name property unless name is blank
-    //and errors.name won't propagate down to TextInputGroup to show an error message for blank name
-    const { errors } = this.state;
     return (
-      <Consumer>
-        {(value) => {
-          const { dispatch } = value;
-          return (
-            <div className="card mb-3">
-              <div className="card-header">Edit Contact</div>
-              <div className="card-body">
-                <form onSubmit={this.onSubmit.bind(this, dispatch)}>
-                  <TextInputGroup
-                    label="Name"
-                    name="name"
-                    type="text"
-                    placeholder="Enter Name"
-                    value={this.state.name}
-                    onChange={this.onChange}
-                    error={errors.name}
-                  />
-                  <TextInputGroup
-                    label="Email"
-                    name="email"
-                    type="email"
-                    placeholder="Enter Email"
-                    value={this.state.email}
-                    onChange={this.onChange}
-                  />
-                  <div className="form-group">
-                    <label htmlFor="phone">Phone</label>
-                    <input
-                      type="text"
-                      name="phone"
-                      value={this.state.phone}
-                      className="form-control form-control-lg"
-                      placeholder="Enter Phone Number"
-                      onChange={this.onChange}
-                    />
-                  </div>
-                  <input
-                    type="submit"
-                    value="Update Contact"
-                    className="btn btn-block btn-light"
-                  />
-                </form>
-              </div>
-            </div>
-          );
-        }}
-      </Consumer>
+      <div className="card mb-3">
+        <div className="card-header">Edit Contact</div>
+        <div className="card-body">
+          <form onSubmit={this.onSubmit}>
+            <TextInputGroup
+              label="Name"
+              name="name"
+              type="text"
+              placeholder="Enter Name"
+              value={this.state.name}
+              onChange={this.onChange}
+              error={this.state.errors.name}
+            />
+            <TextInputGroup
+              label="Email"
+              name="email"
+              type="email"
+              placeholder="Enter Email"
+              value={this.state.email}
+              onChange={this.onChange}
+            />
+            <TextInputGroup
+              label="Phone"
+              name="phone"
+              type="text"
+              placeholder="Enter Phone Number"
+              value={this.state.phone}
+              onChange={this.onChange}
+            />
+
+            <input
+              type="submit"
+              value="Update Contact"
+              className="btn btn-block btn-light"
+            />
+          </form>
+        </div>
+      </div>
     );
   }
 }
 
-export default EditContact;
+EditContact.propTypes = {
+  contact: PropTypes.object.isRequired,
+  getContact: PropTypes.func.isRequired,
+};
+
+//want the single contact object, not the array, hence state.contact.contact
+const mapStateToProps = (state) => ({
+  contact: state.contact.contact,
+});
+
+export default connect(mapStateToProps, { getContact, updateContact })(
+  EditContact
+);

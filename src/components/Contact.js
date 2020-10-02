@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import "../fontawesome";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Consumer } from "../context";
+
+import { connect } from "react-redux";
+import { deleteContact } from "../actions/contactActions";
 import PropTypes from "prop-types";
-import axios from "axios";
 
 class Contact extends Component {
   state = {
@@ -15,13 +16,8 @@ class Contact extends Component {
     this.setState({ showContactInfo: !this.state.showContactInfo });
   };
 
-  onDeleteClick = (_id, dispatch) => {
-    axios.delete(`/api/contacts/${_id}`).then((res) =>
-      dispatch({
-        type: "DELETE_CONTACT",
-        payload: _id,
-      })
-    );
+  onDeleteClick = (_id) => {
+    this.props.deleteContact(_id);
   };
 
   render() {
@@ -30,44 +26,37 @@ class Contact extends Component {
     //const { showContactInfo } = this.state;
 
     return (
-      <Consumer>
-        {(value) => {
-          const { dispatch } = value;
-          return (
-            <div className="card card-body mb-3">
-              <h4>
-                {name}{" "}
-                <FontAwesomeIcon
-                  icon={["fas", "sort-down"]}
-                  onClick={this.onShowClick}
-                  style={{ cursor: "pointer" }}
-                />
-                <FontAwesomeIcon
-                  icon={["fas", "times"]}
-                  style={{ cursor: "pointer", float: "right", color: "red" }}
-                  onClick={this.onDeleteClick.bind(this, _id, dispatch)}
-                />
-                <Link to={`contacts/edit/${_id}`}>
-                  <FontAwesomeIcon
-                    icon={["fas", "pencil-alt"]}
-                    style={{
-                      cursor: "pointer",
-                      float: "right",
-                      marginRight: "1rem",
-                    }}
-                  />
-                </Link>
-              </h4>
-              {this.state.showContactInfo ? (
-                <ul className="list-group">
-                  <li className="list-group-item">Email: {email}</li>
-                  <li className="list-group-item">Phone: {phone}</li>
-                </ul>
-              ) : null}
-            </div>
-          );
-        }}
-      </Consumer>
+      <div className="card card-body mb-3">
+        <h4>
+          {name}{" "}
+          <FontAwesomeIcon
+            icon={["fas", "sort-down"]}
+            onClick={this.onShowClick}
+            style={{ cursor: "pointer" }}
+          />
+          <FontAwesomeIcon
+            icon={["fas", "times"]}
+            style={{ cursor: "pointer", float: "right", color: "red" }}
+            onClick={this.onDeleteClick.bind(this, _id)}
+          />
+          <Link to={`contacts/edit/${_id}`}>
+            <FontAwesomeIcon
+              icon={["fas", "pencil-alt"]}
+              style={{
+                cursor: "pointer",
+                float: "right",
+                marginRight: "1rem",
+              }}
+            />
+          </Link>
+        </h4>
+        {this.state.showContactInfo ? (
+          <ul className="list-group">
+            <li className="list-group-item">Email: {email}</li>
+            <li className="list-group-item">Phone: {phone}</li>
+          </ul>
+        ) : null}
+      </div>
     );
   }
 }
@@ -75,6 +64,7 @@ class Contact extends Component {
 //proptypes used as backup check on data type being exported
 Contact.propTypes = {
   contact: PropTypes.object.isRequired,
+  deleteContact: PropTypes.func.isRequired,
 };
 
-export default Contact;
+export default connect(null, { deleteContact })(Contact);
