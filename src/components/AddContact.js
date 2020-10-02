@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import { Consumer } from "../context";
+//import { Provider } from "react-redux";
 import TextInputGroup from "./TextInputGroup";
-import axios from "axios";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { addContact } from "../actions/contactActions";
 
 class AddContact extends Component {
   state = {
@@ -11,7 +13,7 @@ class AddContact extends Component {
     errors: {},
   };
 
-  onSubmit = (dispatch, e) => {
+  onSubmit = (e) => {
     e.preventDefault();
     //destructuring properties from state
     const { name, email, phone } = this.state;
@@ -21,18 +23,16 @@ class AddContact extends Component {
       this.setState({ errors: { name: "Name is REQUIRED" } });
       return;
     }
+
     const newContact = {
       name,
       email,
       phone,
     };
 
-    axios
-      .post(`/api/contacts`, newContact)
-      .then((res) => dispatch({ type: "ADD_CONTACT", payload: res.data }));
+    this.props.addContact(newContact);
 
-    //clears component state to reset form
-    //also clears errors object so errors aren't propagated
+    //clears component state, which resets form
     this.setState({
       name: "",
       email: "",
@@ -46,61 +46,59 @@ class AddContact extends Component {
 
   onChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
-  //Below shows 2 ways of getting inputs from forms, one uses a functional component <TextInputGroup /> and the other uses JSX markup class="form-group"
   render() {
+    //Below shows 2 ways of getting inputs from forms,
+    //one uses a functional component <TextInputGroup /> and the other uses JSX markup class="form-group"
     //destructured errors from State to avoid TypeError since errors doesn't have a name property unless name is blank
     //and errors.name won't propagate down to TextInputGroup to show an error message for blank name
     const { errors } = this.state;
     return (
-      <Consumer>
-        {(value) => {
-          const { dispatch } = value;
-          return (
-            <div className="card mb-3">
-              <div className="card-header">Add Contact</div>
-              <div className="card-body">
-                <form onSubmit={this.onSubmit.bind(this, dispatch)}>
-                  <TextInputGroup
-                    label="Name"
-                    name="name"
-                    type="text"
-                    placeholder="Enter Name"
-                    value={this.state.name}
-                    onChange={this.onChange}
-                    error={errors.name}
-                  />
-                  <TextInputGroup
-                    label="Email"
-                    name="email"
-                    type="email"
-                    placeholder="Enter Email"
-                    value={this.state.email}
-                    onChange={this.onChange}
-                  />
-                  <div className="form-group">
-                    <label htmlFor="phone">Phone</label>
-                    <input
-                      type="text"
-                      name="phone"
-                      value={this.state.phone}
-                      className="form-control form-control-lg"
-                      placeholder="Enter Phone Number"
-                      onChange={this.onChange}
-                    />
-                  </div>
-                  <input
-                    type="submit"
-                    value="Add Contact"
-                    className="btn btn-block btn-light"
-                  />
-                </form>
-              </div>
+      <div className="card mb-3">
+        <div className="card-header">Add Contact</div>
+        <div className="card-body">
+          <form onSubmit={this.onSubmit.bind(this)}>
+            <TextInputGroup
+              label="Name"
+              name="name"
+              type="text"
+              placeholder="Enter Name"
+              value={this.state.name}
+              onChange={this.onChange}
+              error={errors.name}
+            />
+            <TextInputGroup
+              label="Email"
+              name="email"
+              type="email"
+              placeholder="Enter Email"
+              value={this.state.email}
+              onChange={this.onChange}
+            />
+            <div className="form-group">
+              <label htmlFor="phone">Phone</label>
+              <input
+                type="text"
+                name="phone"
+                value={this.state.phone}
+                className="form-control form-control-lg"
+                placeholder="Enter Phone Number"
+                onChange={this.onChange}
+              />
             </div>
-          );
-        }}
-      </Consumer>
+            <input
+              type="submit"
+              value="Add Contact"
+              className="btn btn-block btn-light"
+            />
+          </form>
+        </div>
+      </div>
     );
   }
 }
 
-export default AddContact;
+AddContact.propTypes = {
+  addContact: PropTypes.func.isRequired,
+};
+
+export default connect(null, { addContact })(AddContact);
