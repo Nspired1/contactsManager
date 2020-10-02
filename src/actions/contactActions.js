@@ -32,6 +32,7 @@ export const addContact = (contact) => async (dispatch) => {
 
 export const updateContact = (contact) => async (dispatch) => {
   const res = await axios.put(`/api/contacts/${contact.id}`);
+  console.log("this is in the contactActions" + contact.name);
   dispatch({
     type: UPDATE_CONTACT,
     payload: res.data,

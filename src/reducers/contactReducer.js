@@ -39,11 +39,14 @@ export default function (state = initialState, action) {
     case UPDATE_CONTACT:
       return {
         ...state,
-        contacts: state.contacts.map((contact) =>
-          contact._id === action.payload.id
+        contacts: state.contacts.map(function (contact) {
+          console.log("contact id: " + contact._id);
+          console.log("action payload id: " + action.payload._id);
+          console.log("action payload name: " + action.payload.name);
+          return contact._id === action.payload._id
             ? (contact = action.payload)
-            : contact
-        ),
+            : contact;
+        }),
       };
     default:
       return state;

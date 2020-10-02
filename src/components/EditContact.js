@@ -39,7 +39,7 @@ class EditContact extends Component {
 
     //_id is needed to keep unique keys for react to correctly display contacts
     const updContact = {
-      _id: id,
+      id,
       name,
       email,
       phone,
